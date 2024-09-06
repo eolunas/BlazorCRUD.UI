@@ -26,17 +26,25 @@ namespace BlazorCRUD.Data.Dapper.Repositories
             throw new NotImplementedException();
         }
 
-        Task<IEnumerable<Film>> IFilmRepository.GetAllFilms()
+        public Task<IEnumerable<Film>> GetAllFilms()
         {
-            throw new NotImplementedException();
+            var db = dbConnection();
+
+            var sql = @"SELECT Id, Title, Director, ReleaseDate FROM [dbo].[Films]";
+
+            return  db.QueryAsync<Film>(sql.ToString(), new { });
         }
 
-        Task<Film> IFilmRepository.GetFilmDetails(int id)
+        public async Task<Film> GetFilmDetails(int id)
         {
-            throw new NotImplementedException();
+            var db = dbConnection();
+
+            var sql = @"SELECT Id, Title, Director, ReleaseDate FROM [dbo].[Films] WHERE Id = @Id";
+
+            return await db.QueryFirstOrDefaultAsync<Film>(sql.ToString(), new { Id = id });
         }
 
-        async Task<bool> IFilmRepository.InsertFilm(Film film)
+        public async Task<bool> InsertFilm(Film film)
         {
             var db = dbConnection();
 
@@ -44,15 +52,22 @@ namespace BlazorCRUD.Data.Dapper.Repositories
                         VALUES (@Title, @Director, @ReleaseDate)";
 
             var result = await db.ExecuteAsync(sql.ToString(), 
-                new { film.Title, film.Director, film.ReleaseDate});
-
+                new { film.Title, film.Director, film.ReleaseDate });
 
             return result > 0;
         }
 
-        Task<bool> IFilmRepository.UpdateFilm(Film film)
+        public async Task<bool> UpdateFilm(Film film)
         {
-            throw new NotImplementedException();
+            var db = dbConnection();
+
+            var sql = @"UPDATE Films 
+                        SET Title = @Title, Director = @Director, ReleaseDate = @ReleaseDate
+                        WHERE Id = @Id";
+
+            var result = await db.ExecuteAsync(sql.ToString(), new { film.Title, film.Director, film.ReleaseDate, film.Id });
+
+            return result > 0;
         }
     }
 }

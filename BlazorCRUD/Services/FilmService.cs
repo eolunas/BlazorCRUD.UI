@@ -17,12 +17,12 @@ namespace BlazorCRUD.Services
 
         Task<IEnumerable<Film>> IFilmService.GetAllFilms()
         {
-            throw new NotImplementedException();
+            return _filmRepository.GetAllFilms();
         }
 
         Task<Film> IFilmService.GetFilmDetails(int id)
         {
-            throw new NotImplementedException();
+            return _filmRepository.GetFilmDetails(id);
         }
 
         Task<bool> IFilmService.InsertFilm(Film film)
@@ -35,7 +35,7 @@ namespace BlazorCRUD.Services
             if (film.Id == 0)
                 return _filmRepository.InsertFilm(film);
             else
-                return null;
+                return _filmRepository.UpdateFilm(film);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿@page "/filmdetails"
+@page "/filmdetails/{id:int}"
 @using Model
 @using Interfaces
 @inject IFilmService FilmService
+@inject NavigationManager NavigationManager
 
 <h1>Film Detail</h1>
 
@@ -31,17 +33,32 @@
 </EditForm>
 
 @code {
+    [Parameter]
+    public int id { get; set; }
+
     [SupplyParameterFromForm(FormName = "insert")]
     public Film film { get; set; } = new();
 
     public async Task SaveFilm()
     {
-
         await FilmService.SaveFilm(film);
+        NavigationManager.NavigateTo("/filmlist");
     }
 
     public void CancelFilm()
     {
-        // Lógica para cancelar, por ejemplo, redirigir a otra página
+        NavigationManager.NavigateTo("/filmlist");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id == 0)
+        {
+            film.ReleaseDate = DateTime.Now;    
+        }
+        else
+        {
+            film = await FilmService.GetFilmDetails(id);
+        }
     }
 }
