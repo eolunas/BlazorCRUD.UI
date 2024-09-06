@@ -1,0 +1,47 @@
+﻿@page "/filmdetails"
+@using Model
+@using Interfaces
+@inject IFilmService FilmService
+
+<h1>Film Detail</h1>
+
+<EditForm Model="film" OnValidSubmit="SaveFilm" FormName="insert" Enhance>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="title">Title:</label>
+        <InputText id="title" @bind-Value="film.Title" class="form-control" />
+        <ValidationMessage For="@(() => film.Title)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="director">Director:</label>
+        <InputText id="director" @bind-Value="film.Director" class="form-control" />
+        <ValidationMessage For="@(() => film.Director)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="releaseDate">Release Date:</label>
+        <InputDate id="releaseDate" @bind-Value="film.ReleaseDate" class="form-control" />
+        <ValidationMessage For="@(() => film.ReleaseDate)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm(FormName = "insert")]
+    public Film film { get; set; } = new();
+
+    public async Task SaveFilm()
+    {
+
+        await FilmService.SaveFilm(film);
+    }
+
+    public void CancelFilm()
+    {
+        // Lógica para cancelar, por ejemplo, redirigir a otra página
+    }
+}
